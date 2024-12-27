@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {getMe,LogOut,reset} from "../features/authSlice";
-import TableUser from "../layout/TableUser";
+import TableUser from "../components/TableUser";
 
 function UserList() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
