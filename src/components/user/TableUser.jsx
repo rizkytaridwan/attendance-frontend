@@ -39,16 +39,16 @@ const TableUser = () => {
       await axios.delete(`http://localhost:8000/users/${id}`, {
         withCredentials: true,
       });
-      setModalVisible(false); // Close the modal
-      fetchUsers(); // Refresh the user list
+      setModalVisible(false); 
+      fetchUsers(); 
     } catch (error) {
       console.error("Error deleting user:", error);
     }
   };
 
   const handleDeleteClick = (id) => {
-    setUserToDelete(id); // Set the user ID to delete
-    setModalVisible(true); // Show the modal
+    setUserToDelete(id); 
+    setModalVisible(true); 
   };
 
   return (

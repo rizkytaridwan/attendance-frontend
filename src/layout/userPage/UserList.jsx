@@ -31,7 +31,7 @@ function UserList() {
   };
 
   useEffect(() => {
-    // Fetch hanya sekali saat komponen dimuat
+    
     document.documentElement.setAttribute("data-bs-theme", theme);
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
@@ -52,13 +52,13 @@ function UserList() {
       navigate("/");
       dispatch(reset());
     } else if (user) {
-      // Logout otomatis jika role tidak sesuai
+      
       if (user.role !== "admin") {
         dispatch(LogOut());
         dispatch(reset());
         navigate("/forbidden");
       } else {
-        // Navigasi ke halaman '/users' jika role sesuai
+        
         if (window.location.pathname !== "/users") {
           navigate("/users");
         }

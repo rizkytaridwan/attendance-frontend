@@ -266,8 +266,8 @@ function UserCreatePage() {
         </header>
         <div className="mt-2"></div>
 
-        {/* Page heading */}
         <AddUser />
+        
       </div>
     </div>
   );
