@@ -58,7 +58,7 @@ useEffect(() => {
       if (user.role !== "admin") {
           dispatch(LogOut());
           dispatch(reset());
-          navigate("/");
+          navigate("/forbidden");
       } else {
           // Navigasi ke halaman '/users' jika role sesuai
           if (window.location.pathname !== "/users") {
