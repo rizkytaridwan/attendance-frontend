@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {getMe,LogOut,reset} from "../features/authSlice";
-import TableUser from "../components/TableUser";
+import {getMe,LogOut,reset} from "../../features/authSlice";
+import TableUser from "../../components/user/TableUser";
 
 function UserList() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -15,7 +15,6 @@ function UserList() {
     localStorage.getItem("tubuhMenuState") === "open"
   );
   
-  const [loading, setLoading] = useState(true); // Tambahkan state untuk loading
   const currentPath = window.location.pathname;
 
   const dispatch = useDispatch();
