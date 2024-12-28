@@ -1,11 +1,12 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {getMe,LogOut,reset} from "../../features/authSlice";
-import TableUser from "../../components/user/TableUser";
+import EditUser from "../../components/user/EditUser";
 
-function UserList() {
+
+function UserEditPage() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const [isSidebarActive, setSidebarActive] = useState(true);
   const [isMainMenuOpen, setIsMainMenuOpen] = useState(
@@ -19,7 +20,7 @@ function UserList() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isError , user } = useSelector((state) => state.auth);
+  const { isError, user } = useSelector((state) => state.auth);
 
   const checkScreenSize = () => {
     if (window.innerWidth >= 1200) {
@@ -32,7 +33,6 @@ function UserList() {
  
 
   useEffect(() => {
-     // Fetch hanya sekali saat komponen dimuat
     document.documentElement.setAttribute("data-bs-theme", theme);
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
@@ -41,30 +41,23 @@ function UserList() {
       window.removeEventListener("resize", checkScreenSize);
     };
   }, [theme]);
+
+  
    
   useEffect(() => {
-    if (!user) {
-        dispatch(getMe());
-    }
-}, [dispatch, user]);
-
+    dispatch(getMe());
+  }, [dispatch]);
 
 useEffect(() => {
   if (isError) {
       navigate("/");
       dispatch(reset());
   } else if (user) {
-      // Logout otomatis jika role tidak sesuai
       if (user.role !== "admin") {
           dispatch(LogOut());
           dispatch(reset());
           navigate("/");
-      } else {
-          // Navigasi ke halaman '/users' jika role sesuai
-          if (window.location.pathname !== "/users") {
-              navigate("/users");
-          }
-      }
+      } 
   }
 }, [isError, user, navigate, dispatch]);
 
@@ -176,7 +169,7 @@ useEffect(() => {
               </li>
               <li
                 className={`sidebar-item has-sub ${
-                  isParentActive(["/product", "/users"]) ? "active" : ""
+                  isParentActive(["/product", "/users" , "/add-user" ,"/edit-user"]) ? "active" : ""
                 }`}
               >
                 <a
@@ -187,8 +180,8 @@ useEffect(() => {
                     toggleMainMenu();
                   }}
                 >
-                  <i className="bi bi-file-earmark-spreadsheet-fill"></i>
-                  <span>Main Menu</span>
+                  <i className="bi bi-person"></i>
+                  <span>User</span>
                 </a>
                 <ul
                   className={`submenu ${
@@ -280,7 +273,7 @@ useEffect(() => {
                 </div>
                 <div className="user-img d-flex align-items-center">
                   <div className="avatar avatar-md">
-                    <img src="./assets/compiled/jpg/1.jpg" alt="User Profile" />
+                  <img src="./assets/compiled/jpg/1.jpg" alt="User Profile" />
                   </div>
                 </div>
               </div>
@@ -314,6 +307,7 @@ useEffect(() => {
               <li>
                 <button
                   className="dropdown-item"
+                  href="#"
                   onClick={logout}
                 >
                   <i className="icon-mid bi bi-box-arrow-left me-2"></i> Logout
@@ -325,10 +319,10 @@ useEffect(() => {
         <div className="mt-2"></div>
 
         {/* Page heading */}
-        <TableUser />
+        <EditUser />
       </div>
     </div>
   );
 }
 
-export default UserList;
+export default UserEditPage;

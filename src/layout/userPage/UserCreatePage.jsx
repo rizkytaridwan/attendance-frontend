@@ -20,7 +20,7 @@ function UserCreatePage() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isError } = useSelector((state) => state.auth);
+  const { isError, user } = useSelector((state) => state.auth);
 
   const checkScreenSize = () => {
     if (window.innerWidth >= 1200) {
@@ -33,7 +33,6 @@ function UserCreatePage() {
  
 
   useEffect(() => {
-     // Fetch hanya sekali saat komponen dimuat
     document.documentElement.setAttribute("data-bs-theme", theme);
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
@@ -49,11 +48,18 @@ function UserCreatePage() {
     dispatch(getMe());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (isError) {
+useEffect(() => {
+  if (isError) {
       navigate("/");
-    }
-  }, [isError, navigate]);
+      dispatch(reset());
+  } else if (user) {
+      if (user.role !== "admin") {
+          dispatch(LogOut());
+          dispatch(reset());
+          navigate("/");
+      } 
+  }
+}, [isError, user, navigate, dispatch]);
 
   const logout = () => {
     dispatch(LogOut());
@@ -163,7 +169,7 @@ function UserCreatePage() {
               </li>
               <li
                 className={`sidebar-item has-sub ${
-                  isParentActive(["/product", "/users"]) ? "active" : ""
+                  isParentActive(["/product", "/users" , "/add-user"]) ? "active" : ""
                 }`}
               >
                 <a
@@ -174,8 +180,8 @@ function UserCreatePage() {
                     toggleMainMenu();
                   }}
                 >
-                  <i className="bi bi-file-earmark-spreadsheet-fill"></i>
-                  <span>Main Menu</span>
+                  <i className="bi bi-person"></i>
+                  <span>User</span>
                 </a>
                 <ul
                   className={`submenu ${

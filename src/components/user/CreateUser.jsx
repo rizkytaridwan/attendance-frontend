@@ -52,9 +52,36 @@ const AddUser = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h3>Register User</h3>
-      {error && <div className="alert alert-danger">{error}</div>}
+<div className="page-heading">
+      <div className="page-title">
+        <div className="row">
+          <div className="col-12 col-md-6 order-md-1 order-last">
+            <h3>Create New User</h3>
+            <p className="text-subtitle text-muted">
+              Powerful interactive tables with datatables (jQuery required).
+            </p>
+          </div>
+          <div className="col-12 col-md-6 order-md-2 order-first">
+            <nav
+              aria-label="breadcrumb"
+              className="breadcrumb-header float-start float-lg-end"
+            >
+              <ol className="breadcrumb">
+                <li className="breadcrumb-item" aria-current="page">
+                  <a href="/users">User Page</a>
+                </li>
+                <li className="breadcrumb-item active" aria-current="page">
+                  Create User
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <section className="section">
+        <div className="card">
+          <div className="card-body">
+            {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
       <form onSubmit={handleRegister}>
         <div className="mb-3">
@@ -145,10 +172,14 @@ const AddUser = () => {
             onChange={(e) => setImage(e.target.files[0])}
           />
         </div>
-        <button type="submit" className="btn btn-primary" disabled={loading}>
+        <button type="submit" className="btn btn-primary me-2" disabled={loading}>
           {loading ? "Loading..." : "Register"}
         </button>
+        <a href="/users" className="btn btn-secondary">Back</a>
       </form>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
