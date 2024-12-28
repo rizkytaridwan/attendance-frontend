@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const NotFoundPage = () => {
   return (
@@ -11,7 +11,7 @@ const NotFoundPage = () => {
               className="img-error"
               src="./assets/compiled/svg/error-404.svg"
               alt="Not Found"
-              style={{ width: '60%', height: 'auto' }} // Adjust the size here
+              style={{ width: "60%", height: "auto" }}
             />
             <h1 className="error-title">Not Found</h1>
             <p className="fs-5 text-gray-600">
