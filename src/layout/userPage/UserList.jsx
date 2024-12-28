@@ -1,9 +1,10 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {getMe,LogOut,reset} from "../../features/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getMe, LogOut, reset } from "../../features/authSlice";
 import TableUser from "../../components/user/TableUser";
+import Header from "../Header";
 
 function UserList() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -14,12 +15,12 @@ function UserList() {
   const [isTubuhMenuOpen, setIsTubuhMenuOpen] = useState(
     localStorage.getItem("tubuhMenuState") === "open"
   );
-  
+
   const currentPath = window.location.pathname;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isError , user } = useSelector((state) => state.auth);
+  const { isError, user } = useSelector((state) => state.auth);
 
   const checkScreenSize = () => {
     if (window.innerWidth >= 1200) {
@@ -29,10 +30,8 @@ function UserList() {
     }
   };
 
- 
-
   useEffect(() => {
-     // Fetch hanya sekali saat komponen dimuat
+    // Fetch hanya sekali saat komponen dimuat
     document.documentElement.setAttribute("data-bs-theme", theme);
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
@@ -41,38 +40,31 @@ function UserList() {
       window.removeEventListener("resize", checkScreenSize);
     };
   }, [theme]);
-   
+
   useEffect(() => {
     if (!user) {
-        dispatch(getMe());
+      dispatch(getMe());
     }
-}, [dispatch, user]);
+  }, [dispatch, user]);
 
-
-useEffect(() => {
-  if (isError) {
+  useEffect(() => {
+    if (isError) {
       navigate("/");
       dispatch(reset());
-  } else if (user) {
+    } else if (user) {
       // Logout otomatis jika role tidak sesuai
       if (user.role !== "admin") {
-          dispatch(LogOut());
-          dispatch(reset());
-          navigate("/forbidden");
+        dispatch(LogOut());
+        dispatch(reset());
+        navigate("/forbidden");
       } else {
-          // Navigasi ke halaman '/users' jika role sesuai
-          if (window.location.pathname !== "/users") {
-              navigate("/users");
-          }
+        // Navigasi ke halaman '/users' jika role sesuai
+        if (window.location.pathname !== "/users") {
+          navigate("/users");
+        }
       }
-  }
-}, [isError, user, navigate, dispatch]);
-
-  const logout = () => {
-    dispatch(LogOut());
-    dispatch(reset());
-    navigate("/");
-  };
+    }
+  }, [isError, user, navigate, dispatch]);
 
   const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
@@ -271,56 +263,7 @@ useEffect(() => {
             <i className="bi bi-justify fs-3"></i>
           </a>
 
-          <div className="dropdown ms-auto">
-            <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-              <div className="user-menu d-flex">
-                <div className="user-name text-end me-3">
-                  <h6 className="mb-0 text-gray-600">John Ducky</h6>
-                  <p className="mb-0 text-sm text-gray-600">Administrator</p>
-                </div>
-                <div className="user-img d-flex align-items-center">
-                  <div className="avatar avatar-md">
-                    <img src="./assets/compiled/jpg/1.jpg" alt="User Profile" />
-                  </div>
-                </div>
-              </div>
-            </a>
-            <ul
-              className="dropdown-menu dropdown-menu-end"
-              aria-labelledby="dropdownMenuButton"
-              style={{ minWidth: "11rem" }}
-            >
-              <li>
-                <h6 className="dropdown-header">Hello, John!</h6>
-              </li>
-              <li>
-                <a className="dropdown-item" href="#">
-                  <i className="icon-mid bi bi-person me-2"></i> My Profile
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="#">
-                  <i className="icon-mid bi bi-gear me-2"></i> Settings
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="#">
-                  <i className="icon-mid bi bi-wallet me-2"></i> Wallet
-                </a>
-              </li>
-              <li>
-                <hr className="dropdown-divider" />
-              </li>
-              <li>
-                <button
-                  className="dropdown-item"
-                  onClick={logout}
-                >
-                  <i className="icon-mid bi bi-box-arrow-left me-2"></i> Logout
-                </button>
-              </li>
-            </ul>
-          </div>
+          <Header />
         </header>
         <div className="mt-2"></div>
 

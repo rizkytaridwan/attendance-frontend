@@ -19,6 +19,55 @@ const EditUser = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const positionsByDepartment = {
+    Finance: [
+      "Chief Financial Officer (CFO)",
+      "Finance Manager",
+      "Accountant",
+      "Financial Analyst",
+      "Treasury Specialist",
+    ],
+    "Human Resources - HR": [
+      "HR Manager",
+      "Recruitment Specialist",
+      "Training and Development Officer",
+      "Payroll Officer",
+      "Employee Relations Specialist",
+    ],
+    Operations: [
+      "Chief Operating Officer (COO)",
+      "Operations Manager",
+      "Logistics Coordinator",
+      "Quality Control Specialist",
+      "Production Supervisor",
+    ],
+    Marketing: [
+      "Chief Marketing Officer (CMO)",
+      "Marketing Manager",
+      "Digital Marketing Specialist",
+      "Brand Manager",
+      "Content Creator",
+    ],
+    Sales: [
+      "Sales Manager",
+      "Account Executive",
+      "Sales Representative",
+      "Business Development Manager",
+    ],
+    "Information Technology - IT": [
+      "Chief Technology Officer (CTO)",
+      "IT Manager",
+      "Software Engineer",
+      "Network Administrator",
+      "IT Support Specialist",
+    ],
+    "Research and Development - R&D": [
+      "R&D Manager",
+      "Product Developer",
+      "Research Analyst",
+    ],
+  };
+
   // Ambil data pengguna berdasarkan id dari parameter URL
   useEffect(() => {
     const fetchUserData = async () => {
@@ -54,7 +103,7 @@ const EditUser = () => {
       setLoading(true);
       setError(null);
       setSuccess(null);
-      const response = await axios.put(
+      const response = await axios.patch(
         `http://localhost:8000/users/${id}`,
         formData,
         {
@@ -106,54 +155,74 @@ const EditUser = () => {
             {success && <div className="alert alert-success">{success}</div>}
             <form onSubmit={handleUpdate}>
               <div className="mb-3">
-                <label htmlFor="name" className="form-label">Name</label>
+                <label htmlFor="name" className="form-label">
+                  Name
+                </label>
                 <input
                   type="text"
                   id="name"
                   className="form-control"
                   value={userData.name}
-                  onChange={(e) => setUserData({ ...userData, name: e.target.value })}
+                  onChange={(e) =>
+                    setUserData({ ...userData, name: e.target.value })
+                  }
                   required
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">Email</label>
+                <label htmlFor="email" className="form-label">
+                  Email
+                </label>
                 <input
                   type="email"
                   id="email"
                   className="form-control"
                   value={userData.email}
-                  onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+                  onChange={(e) =>
+                    setUserData({ ...userData, email: e.target.value })
+                  }
                   required
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="password" className="form-label">Password</label>
+                <label htmlFor="password" className="form-label">
+                  Password
+                </label>
                 <input
                   type="password"
                   id="password"
                   className="form-control"
                   value={userData.password}
-                  onChange={(e) => setUserData({ ...userData, password: e.target.value })}
+                  onChange={(e) =>
+                    setUserData({ ...userData, password: e.target.value })
+                  }
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="confPassword" className="form-label">Confirm Password</label>
+                <label htmlFor="confPassword" className="form-label">
+                  Confirm Password
+                </label>
                 <input
                   type="password"
                   id="confPassword"
                   className="form-control"
                   value={userData.confPassword}
-                  onChange={(e) => setUserData({ ...userData, confPassword: e.target.value })}
+                  onChange={(e) =>
+                    setUserData({ ...userData, confPassword: e.target.value })
+                  }
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="role" className="form-label">Role</label>
+                <label htmlFor="role" className="form-label">
+                  Role
+                </label>
                 <select
                   id="role"
                   className="form-control"
                   value={userData.role}
-                  onChange={(e) => setUserData({ ...userData, role: e.target.value })}
+                  onChange={(e) =>
+                    setUserData({ ...userData, role: e.target.value })
+                  }
                   required
                 >
                   <option value="user">User</option>
@@ -161,35 +230,67 @@ const EditUser = () => {
                 </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="departement" className="form-label">Departement</label>
-                <input
-                  type="text"
+                <label htmlFor="departement" className="form-label">
+                  Departement
+                </label>
+                <select
                   id="departement"
                   className="form-control"
                   value={userData.departement}
-                  onChange={(e) => setUserData({ ...userData, departement: e.target.value })}
+                  onChange={(e) =>
+                    setUserData({
+                      ...userData,
+                      departement: e.target.value,
+                      position: "",
+                    })
+                  }
                   required
-                />
+                >
+                  <option value="">Select Departement</option>
+                  {Object.keys(positionsByDepartment).map((dept) => (
+                    <option key={dept} value={dept}>
+                      {dept}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="position" className="form-label">Position</label>
-                <input
-                  type="text"
+                <label htmlFor="position" className="form-label">
+                  Position
+                </label>
+                <select
                   id="position"
                   className="form-control"
                   value={userData.position}
-                  onChange={(e) => setUserData({ ...userData, position: e.target.value })}
+                  onChange={(e) =>
+                    setUserData({ ...userData, position: e.target.value })
+                  }
                   required
-                />
+                >
+                  <option value="">Select Position</option>
+                  {(positionsByDepartment[userData.departement] || []).map(
+                    (pos) => (
+                      <option key={pos} value={pos}>
+                        {pos}
+                      </option>
+                    )
+                  )}
+                </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="image" className="form-label">Image</label>
+                <label htmlFor="image" className="form-label">
+                  Image
+                </label>
                 {userData.image && (
                   <div>
                     <img
                       src={`http://localhost:8000${userData.image}`}
                       alt="User"
-                      style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
                     />
                     <p className="mt-2">Current Image</p>
                   </div>
@@ -198,13 +299,21 @@ const EditUser = () => {
                   type="file"
                   id="image"
                   className="form-control"
-                  onChange={(e) => setUserData({ ...userData, image: e.target.files[0] })}
+                  onChange={(e) =>
+                    setUserData({ ...userData, image: e.target.files[0] })
+                  }
                 />
               </div>
-              <button type="submit" className="btn btn-primary me-2" disabled={loading}>
+              <button
+                type="submit"
+                className="btn btn-primary me-2"
+                disabled={loading}
+              >
                 {loading ? "Loading..." : "Update"}
               </button>
-              <a href="/users" className="btn btn-secondary">Back</a>
+              <a href="/users" className="btn btn-secondary">
+                Back
+              </a>
             </form>
           </div>
         </div>

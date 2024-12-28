@@ -81,17 +81,19 @@ const TableUser = () => {
       <section className="section">
         <div className="card">
           <div className="card-header">
-            <a href="add-user" className="btn btn-primary">Add User</a>
+            <a href="add-user" className="btn btn-primary">
+              Add User
+            </a>
           </div>
           <div className="card-body">
-            <div className="table-responsive datatable-minimal">
+            <div className="table-responsive">
               {loading ? (
                 <p>Loading data...</p>
               ) : (
-                <table className="table table-striped" id="table1">
+                <table className="table table-hover" id="table1">
                   <thead>
                     <tr>
-                      <td>No</td>
+                      <th>No</th>
                       <th>Name</th>
                       <th>Email</th>
                       <th>Role</th>
@@ -101,13 +103,17 @@ const TableUser = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.map((user,index) => (
+                    {users.map((user, index) => (
                       <tr key={user.uuid}>
                         <td>{index + 1}</td>
                         <td>
                           <div className="avatar avatar-md">
                             <img
-                              src={user.image ? `http://localhost:8000${user.image}` : "http://localhost:8000/uploads/basic1.jpg"}
+                              src={
+                                user.image
+                                  ? `http://localhost:8000${user.image}`
+                                  : "http://localhost:8000/uploads/basic1.jpg"
+                              }
                               alt="User"
                             />
                           </div>
@@ -123,10 +129,13 @@ const TableUser = () => {
                             href={`/edit-user/${user.uuid}`}
                             className="btn btn-sm btn-warning"
                           >
-                           <i className="bi bi-pencil-fill"></i>
+                            <i className="bi bi-pencil-fill"></i>
                           </a>
                           &nbsp;
-                          <button onClick={() => handleDeleteClick(user.uuid)} className="btn btn-sm btn-danger">
+                          <button
+                            onClick={() => handleDeleteClick(user.uuid)}
+                            className="btn btn-sm btn-danger"
+                          >
                             <i className="bi bi-trash3-fill"></i>
                           </button>
                         </td>
@@ -141,12 +150,25 @@ const TableUser = () => {
       </section>
 
       {modalVisible && (
-        <div className="modal fade show" id="deleteModal" tabIndex="-1" role="dialog" aria-hidden="true" style={{ display: 'block' }}>
+        <div
+          className="modal fade show"
+          id="deleteModal"
+          tabIndex="-1"
+          role="dialog"
+          aria-hidden="true"
+          style={{ display: "block" }}
+        >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header bg-danger">
                 <h5 className="modal-title text-white">Delete Confirmation</h5>
-                <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close" onClick={() => setModalVisible(false)}>
+                <button
+                  type="button"
+                  className="close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => setModalVisible(false)}
+                >
                   <i data-feather="x"></i>
                 </button>
               </div>
