@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment-timezone";
-import Choices from "choices.js";
+import Choices from "choices.js"; // Import choices.js
 
 const TableAttendance = () => {
   const [attendances, setAttendances] = useState([]);
@@ -105,18 +105,6 @@ const TableAttendance = () => {
   }, [loading]);
 
   useEffect(() => {
-    if (users.length > 0) {
-      const element = document.querySelector("#user-select");
-      if (element) {
-        new Choices(element, {
-          searchEnabled: true,
-          itemSelectText: "Press to select",
-        });
-      }
-    }
-  }, [users]);
-
-  useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
         setDetailModalVisible(false);
@@ -154,6 +142,18 @@ const TableAttendance = () => {
     setAttendanceDetail(attendance);
     setDetailModalVisible(true);
   };
+
+  useEffect(() => {
+    if (inputModalVisible) {
+      // Initialize choices.js on the select element
+      const userSelectElement = document.getElementById("user-select");
+      new Choices(userSelectElement, {
+        removeItemButton: true,
+        searchEnabled: true,
+        itemSelectText: "",
+      });
+    }
+  }, [inputModalVisible]);
 
   return (
     <div className="page-heading">
@@ -197,7 +197,7 @@ const TableAttendance = () => {
                   </thead>
                   <tbody>
                     {attendances.map((attendance, index) => (
-                      <tr key={attendance.uuid}>
+                      <tr key={`${attendance.uuid}-${index}`}>
                         <td>{index + 1}</td>
                         <td>
                           <button
@@ -260,12 +260,18 @@ const TableAttendance = () => {
           <div className="card">
             <div className="card-header">
               <h4>
-                Attendance for {attendanceInput.month}/{attendanceInput.year}
+                Attendance for{" "}
+                {attendanceInput.userId
+                  ? users.find(
+                      (user) => user.id === parseInt(attendanceInput.userId)
+                    )?.name || "Unknown User"
+                  : "Select User"}{" "}
+                {attendanceInput.month}/{attendanceInput.year}
               </h4>
             </div>
             <div className="card-body">
               <div className="table-responsive">
-                <table className="table table-hover">
+                <table className="table table-bordered">
                   <thead>
                     <tr>
                       <th>No</th>
@@ -275,14 +281,14 @@ const TableAttendance = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {monthlyAttendances.map((attendance, index) => (
-                      <tr key={attendance.id}>
-                        <td>{index + 1}</td>
-                        <td>{formatTime(attendance.check_in_time)}</td>
+                    {monthlyAttendances.map((attendance1, no) => (
+                      <tr key={attendance1.id}>
+                        <td>{no + 1}</td>
+                        <td>{formatTime(attendance1.check_in_time)}</td>
                         <td>
-                          {formatTime(attendance.check_out_time) || "N/A"}
+                          {formatTime(attendance1.check_out_time) || "N/A"}
                         </td>
-                        <td>{attendance.lateness_minutes || "N/A"}</td>
+                        <td>{attendance1.lateness_minutes || "N/A"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -291,51 +297,6 @@ const TableAttendance = () => {
             </div>
           </div>
         </section>
-      )}
-
-      {modalVisible && (
-        <div
-          className="modal fade show"
-          tabIndex="-1"
-          style={{ display: "block" }}
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header bg-danger">
-                <h5 className="modal-title text-white">Delete Confirmation</h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                  onClick={() => setModalVisible(false)}
-                >
-                  <i data-feather="x"></i>
-                </button>
-              </div>
-              <div className="modal-body">
-                Are you sure you want to delete this attendance record?
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-light-secondary"
-                  data-bs-dismiss="modal"
-                  onClick={() => setModalVisible(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-danger ms-1"
-                  onClick={() => deleteAttendance(attendanceToDelete)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
       )}
 
       {inputModalVisible && (
@@ -360,18 +321,17 @@ const TableAttendance = () => {
               </div>
               <div className="modal-body">
                 <div className="form-group">
-                  <label>User</label>
+                  <label>Nama User</label>
                   <select
                     id="user-select"
-                    className="choices form-control"
+                    className="choices form-select"
                     value={attendanceInput.userId}
-                    onChange={(e) => {
-                      const selectedUserId = e.target.value;
+                    onChange={(e) =>
                       setAttendanceInput({
                         ...attendanceInput,
-                        userId: selectedUserId,
-                      });
-                    }}
+                        userId: e.target.value,
+                      })
+                    }
                   >
                     <option value="">Select User</option>
                     {users.map((user) => (
@@ -437,90 +397,6 @@ const TableAttendance = () => {
                   onClick={fetchAttendanceInMonth}
                 >
                   Get Data
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {detailModalVisible && attendanceDetail && (
-        <div
-          className="modal fade show"
-          tabIndex="-1"
-          style={{ display: "block" }}
-          data-bs-keyboard="true"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Attendance Details</h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                  onClick={() => setDetailModalVisible(false)}
-                >
-                  <i data-feather="x"></i>
-                </button>
-              </div>
-              <div className="modal-body">
-                <div className="row">
-                  <div className="col-md-6 text-center">
-                    <h6>Check-in Image</h6>
-                    <img
-                      src={
-                        attendanceDetail.check_in_image
-                          ? `http://localhost:8000/${attendanceDetail.check_in_image}`
-                          : "http://localhost:8000/uploads/nodata.jpg"
-                      }
-                      alt="Check-in"
-                      className="img-fluid rounded"
-                    />
-                  </div>
-                  <div className="col-md-6 text-center">
-                    <h6>Check-out Image</h6>
-                    <img
-                      src={
-                        attendanceDetail.check_out_image
-                          ? `http://localhost:8000/${attendanceDetail.check_out_image}`
-                          : "http://localhost:8000/uploads/nodata.jpg"
-                      }
-                      alt="Check-out"
-                      className="img-fluid rounded"
-                    />
-                  </div>
-                </div>
-                <hr />
-                <div className="mt-3">
-                  <p>
-                    <strong>Name:</strong> {attendanceDetail.user.name}
-                  </p>
-                  <p>
-                    <strong>Department:</strong>{" "}
-                    {attendanceDetail.user.departement}
-                  </p>
-                  <p>
-                    <strong>Position:</strong> {attendanceDetail.user.position}
-                  </p>
-                  <p>
-                    <strong>Check-in Time:</strong>{" "}
-                    {formatTime(attendanceDetail.check_in_time)}
-                  </p>
-                  <p>
-                    <strong>Check-out Time:</strong>{" "}
-                    {formatTime(attendanceDetail.check_out_time) || "N/A"}
-                  </p>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setDetailModalVisible(false)}
-                >
-                  Close
                 </button>
               </div>
             </div>
