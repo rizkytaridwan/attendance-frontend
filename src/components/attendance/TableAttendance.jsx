@@ -4,8 +4,8 @@ import moment from "moment-timezone";
 import Choices from "choices.js";
 
 const TableAttendance = () => {
-  const [attendances, setAttendances] = useState([]); // General attendance
-  const [monthlyAttendances, setMonthlyAttendances] = useState([]); // Monthly attendance data
+  const [attendances, setAttendances] = useState([]);
+  const [monthlyAttendances, setMonthlyAttendances] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [attendanceToDelete, setAttendanceToDelete] = useState(null);
@@ -15,9 +15,10 @@ const TableAttendance = () => {
     month: "",
     year: "",
   });
-  const [users, setUsers] = useState([]); // List of users
+  const [users, setUsers] = useState([]);
+  const [detailModalVisible, setDetailModalVisible] = useState(false);
+  const [attendanceDetail, setAttendanceDetail] = useState(null);
 
-  // Fetch all users (with caching to avoid re-fetching)
   const fetchUsers = async () => {
     if (users.length === 0) {
       try {
@@ -31,7 +32,6 @@ const TableAttendance = () => {
     }
   };
 
-  // Fetch all attendances
   const fetchAttendance = async () => {
     try {
       const response = await axios.get("http://localhost:8000/attendance", {
@@ -44,7 +44,6 @@ const TableAttendance = () => {
     }
   };
 
-  // Fetch monthly attendance
   const fetchAttendanceInMonth = async () => {
     try {
       const response = await axios.post(
@@ -54,14 +53,13 @@ const TableAttendance = () => {
           withCredentials: true,
         }
       );
-      setMonthlyAttendances(response.data.data); // Set monthly attendance data
+      setMonthlyAttendances(response.data.data);
       setInputModalVisible(false);
     } catch (error) {
       console.error("Error fetching attendance in month:", error);
     }
   };
 
-  // Handle delete attendance
   const deleteAttendance = async (id) => {
     try {
       await axios.delete(`http://localhost:8000/attendance/${id}`, {
@@ -89,24 +87,23 @@ const TableAttendance = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []); // Fetch users on component mount
+  }, []);
 
   useEffect(() => {
     fetchAttendance();
   }, []);
 
-    useEffect(() => {
-      if (!loading) {
-        if (window.$.fn.dataTable.isDataTable("#table1")) {
-          window.$("#table1").DataTable().destroy();
-        }
-        window.$("#table1").DataTable({
-          responsive: true,
-        });
+  useEffect(() => {
+    if (!loading) {
+      if (window.$.fn.dataTable.isDataTable("#table1")) {
+        window.$("#table1").DataTable().destroy();
       }
-    }, [loading]);
+      window.$("#table1").DataTable({
+        responsive: true,
+      });
+    }
+  }, [loading]);
 
-  // Initialize Choices.js after users are fetched and select elements are rendered
   useEffect(() => {
     if (users.length > 0) {
       const element = document.querySelector("#user-select");
@@ -118,6 +115,45 @@ const TableAttendance = () => {
       }
     }
   }, [users]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setDetailModalVisible(false);
+        setModalVisible(false);
+        setInputModalVisible(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleModalKeyDown = (event) => {
+      if (modalVisible) {
+        if (event.key === "Escape") {
+          setModalVisible(false);
+        } else if (event.key === "Enter" && attendanceToDelete) {
+          deleteAttendance(attendanceToDelete);
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleModalKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleModalKeyDown);
+    };
+  }, [modalVisible, attendanceToDelete]);
+
+  const handleNameClick = (attendance) => {
+    setAttendanceDetail(attendance);
+    setDetailModalVisible(true);
+  };
 
   return (
     <div className="page-heading">
@@ -163,11 +199,40 @@ const TableAttendance = () => {
                     {attendances.map((attendance, index) => (
                       <tr key={attendance.uuid}>
                         <td>{index + 1}</td>
-                        <td>{attendance.user.name}</td>
+                        <td>
+                          <button
+                            className="btn btn-link"
+                            onClick={() => handleNameClick(attendance)}
+                          >
+                            {attendance.user.name}
+                          </button>
+                        </td>
                         <td>{attendance.user.departement}</td>
                         <td>{attendance.user.position}</td>
-                        <td>{formatTime(attendance.check_in_time)}</td>
                         <td>
+                          <div className="avatar avatar-md me-1">
+                            <img
+                              src={
+                                attendance.check_in_image
+                                  ? `http://localhost:8000/${attendance.check_in_image}`
+                                  : "http://localhost:8000/uploads/nodata.jpg"
+                              }
+                              alt="Attendance"
+                            />
+                          </div>
+                          {formatTime(attendance.check_in_time)}
+                        </td>
+                        <td>
+                          <div className="avatar avatar-md me-1">
+                            <img
+                              src={
+                                attendance.check_out_image
+                                  ? `http://localhost:8000/${attendance.check_out_image}`
+                                  : "http://localhost:8000/uploads/nodata.jpg"
+                              }
+                              alt="Attendance"
+                            />
+                          </div>
                           {formatTime(attendance.check_out_time) || "N/A"}
                         </td>
                         <td>{attendance.status}</td>
@@ -228,7 +293,6 @@ const TableAttendance = () => {
         </section>
       )}
 
-      {/* Modal for confirming deletion */}
       {modalVisible && (
         <div
           className="modal fade show"
@@ -274,7 +338,6 @@ const TableAttendance = () => {
         </div>
       )}
 
-      {/* Modal for getting attendance by month */}
       {inputModalVisible && (
         <div
           className="modal fade show"
@@ -299,7 +362,7 @@ const TableAttendance = () => {
                 <div className="form-group">
                   <label>User</label>
                   <select
-                    id="user-select" // ID for Choices.js
+                    id="user-select"
                     className="choices form-control"
                     value={attendanceInput.userId}
                     onChange={(e) => {
@@ -374,6 +437,90 @@ const TableAttendance = () => {
                   onClick={fetchAttendanceInMonth}
                 >
                   Get Data
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {detailModalVisible && attendanceDetail && (
+        <div
+          className="modal fade show"
+          tabIndex="-1"
+          style={{ display: "block" }}
+          data-bs-keyboard="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Attendance Details</h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => setDetailModalVisible(false)}
+                >
+                  <i data-feather="x"></i>
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="row">
+                  <div className="col-md-6 text-center">
+                    <h6>Check-in Image</h6>
+                    <img
+                      src={
+                        attendanceDetail.check_in_image
+                          ? `http://localhost:8000/${attendanceDetail.check_in_image}`
+                          : "http://localhost:8000/uploads/nodata.jpg"
+                      }
+                      alt="Check-in"
+                      className="img-fluid rounded"
+                    />
+                  </div>
+                  <div className="col-md-6 text-center">
+                    <h6>Check-out Image</h6>
+                    <img
+                      src={
+                        attendanceDetail.check_out_image
+                          ? `http://localhost:8000/${attendanceDetail.check_out_image}`
+                          : "http://localhost:8000/uploads/nodata.jpg"
+                      }
+                      alt="Check-out"
+                      className="img-fluid rounded"
+                    />
+                  </div>
+                </div>
+                <hr />
+                <div className="mt-3">
+                  <p>
+                    <strong>Name:</strong> {attendanceDetail.user.name}
+                  </p>
+                  <p>
+                    <strong>Department:</strong>{" "}
+                    {attendanceDetail.user.departement}
+                  </p>
+                  <p>
+                    <strong>Position:</strong> {attendanceDetail.user.position}
+                  </p>
+                  <p>
+                    <strong>Check-in Time:</strong>{" "}
+                    {formatTime(attendanceDetail.check_in_time)}
+                  </p>
+                  <p>
+                    <strong>Check-out Time:</strong>{" "}
+                    {formatTime(attendanceDetail.check_out_time) || "N/A"}
+                  </p>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setDetailModalVisible(false)}
+                >
+                  Close
                 </button>
               </div>
             </div>
