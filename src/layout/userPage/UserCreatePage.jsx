@@ -18,7 +18,6 @@ function UserCreatePage() {
   );
 
   const currentPath = window.location.pathname;
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isError, user } = useSelector((state) => state.auth);
@@ -75,18 +74,15 @@ function UserCreatePage() {
   };
 
   const toggleMainMenu = () => {
-    const newMainMenuState = !isMainMenuOpen;
-    setIsMainMenuOpen(newMainMenuState);
-    localStorage.setItem("mainMenuState", newMainMenuState ? "open" : "closed");
+    const newState = !isMainMenuOpen;
+    setIsMainMenuOpen(newState);
+    localStorage.setItem("mainMenuState", newState ? "open" : "closed");
   };
 
   const toggleOvertimeMenu = () => {
-    const newOvertimeMenuState = !isOvertimeMenuOpen;
-    setIsOvertimeMenuOpen(newOvertimeMenuState);
-    localStorage.setItem(
-      "OvertimeMenuState",
-      newOvertimeMenuState ? "open" : "closed"
-    );
+    const newState = !isOvertimeMenuOpen;
+    setIsOvertimeMenuOpen(newState);
+    localStorage.setItem("OvertimeMenuState", newState ? "open" : "closed");
   };
 
   const isActive = (path) => currentPath === path;
@@ -97,7 +93,7 @@ function UserCreatePage() {
 
   return (
     <div id="app">
-      <Sidebar
+       <Sidebar
         theme={theme}
         toggleTheme={toggleTheme}
         isSidebarActive={isSidebarActive}

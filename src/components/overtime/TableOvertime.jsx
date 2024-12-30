@@ -17,7 +17,14 @@ const TableOvertime = () => {
       const response = await axios.get("http://localhost:8000/overtime", {
         withCredentials: true,
       });
-      setOvertimes(response.data);
+
+      const sortedOvertimes = [...response.data].sort((a, b) => {
+        if (a.status === "Pending" && b.status !== "Pending") return -1;
+        if (a.status !== "Pending" && b.status === "Pending") return 1;
+        return new Date(b.date) - new Date(a.date);
+      });
+
+      setOvertimes(sortedOvertimes);
       setLoading(false);
     } catch (error) {
       console.error(
@@ -76,6 +83,17 @@ const TableOvertime = () => {
     } catch (error) {
       console.error("Error rejecting overtime:", error);
     }
+  };
+
+  const getBadgeClass = (status) => {
+    if (status === "Pending") {
+      return "bg-warning";
+    } else if (status === "Approved") {
+      return "bg-success";
+    } else if (status === "Rejected") {
+      return "bg-danger";
+    }
+    return ""; // Default if no status matched
   };
 
   const handleApproveClick = (id) => {
@@ -139,17 +157,27 @@ const TableOvertime = () => {
                     {overtimes.map((overtime, index) => (
                       <tr key={overtime.uuid}>
                         <td>{index + 1}</td>
-                        <td>{format(new Date(overtime.date), 'yyyy-MM-dd')}</td>
+                        <td>{format(new Date(overtime.date), "yyyy-MM-dd")}</td>
                         <td>{overtime.hours}</td>
                         <td>{overtime.description}</td>
                         <td>{`Rp ${overtime.overtime_payment.toLocaleString()}`}</td>
-                        <td>{overtime.status}</td>
+                        <td>
+                          <span
+                            className={`badge ${getBadgeClass(
+                              overtime.status
+                            )}`}
+                          >
+                            {overtime.status}
+                          </span>
+                        </td>
                         <td>{overtime.approved_by || "Pending"}</td>
                         <td>
                           {overtime.status === "Pending" && (
                             <>
                               <button
-                                onClick={() => handleApproveClick(overtime.uuid)}
+                                onClick={() =>
+                                  handleApproveClick(overtime.uuid)
+                                }
                                 className="btn btn-sm btn-success"
                               >
                                 Approve

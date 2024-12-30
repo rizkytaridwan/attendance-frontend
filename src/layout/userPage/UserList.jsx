@@ -17,7 +17,6 @@ function UserList() {
   );
 
   const currentPath = window.location.pathname;
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isError, user } = useSelector((state) => state.auth);
@@ -38,6 +37,7 @@ function UserList() {
       window.removeEventListener("resize", checkScreenSize);
     };
   }, []);
+
   useEffect(() => {
     if (!user) {
       dispatch(getMe());
@@ -73,18 +73,15 @@ function UserList() {
   };
 
   const toggleMainMenu = () => {
-    const newMainMenuState = !isMainMenuOpen;
-    setIsMainMenuOpen(newMainMenuState);
-    localStorage.setItem("mainMenuState", newMainMenuState ? "open" : "closed");
+    const newState = !isMainMenuOpen;
+    setIsMainMenuOpen(newState);
+    localStorage.setItem("mainMenuState", newState ? "open" : "closed");
   };
 
   const toggleOvertimeMenu = () => {
-    const newOvertimeMenuState = !isOvertimeMenuOpen;
-    setIsOvertimeMenuOpen(newOvertimeMenuState);
-    localStorage.setItem(
-      "OvertimeMenuState",
-      newOvertimeMenuState ? "open" : "closed"
-    );
+    const newState = !isOvertimeMenuOpen;
+    setIsOvertimeMenuOpen(newState);
+    localStorage.setItem("OvertimeMenuState", newState ? "open" : "closed");
   };
 
   const isActive = (path) => currentPath === path;
