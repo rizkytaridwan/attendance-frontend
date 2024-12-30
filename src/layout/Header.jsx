@@ -1,11 +1,19 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { LogOut, reset } from "../features/authSlice";
+import { LogOut, reset, getMe } from "../features/authSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!user) {
+      dispatch(getMe());
+    }
+  }, [dispatch, user]);
 
   const logout = () => {
     dispatch(LogOut());
@@ -18,12 +26,23 @@ const Header = () => {
       <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
         <div className="user-menu d-flex">
           <div className="user-name text-end me-3">
-            <h6 className="mb-0 text-gray-600">John Ducky</h6>
-            <p className="mb-0 text-sm text-gray-600">Administrator</p>
+            <h6 className="mb-0 text-gray-600">
+              {user ? user.name : "John Ducky"}
+            </h6>
+            <p className="mb-0 text-sm text-gray-600">
+              {user ? user.departement : "Administrator"}
+            </p>
           </div>
           <div className="user-img d-flex align-items-center">
             <div className="avatar avatar-md">
-              <img src="./assets/compiled/jpg/1.jpg" alt="User Profile" />
+              <img
+                src={
+                  user
+                    ? `http://localhost:8000${user.image}`
+                    : "./assets/compiled/jpg/1.jpg"
+                }
+                alt="User Profile"
+              />
             </div>
           </div>
         </div>
@@ -34,7 +53,9 @@ const Header = () => {
         style={{ minWidth: "11rem" }}
       >
         <li>
-          <h6 className="dropdown-header">Hello, John!</h6>
+          <h6 className="dropdown-header">
+            Hello, {user ? user.name : "John!"}
+          </h6>
         </li>
         <li>
           <a className="dropdown-item" href="#">
