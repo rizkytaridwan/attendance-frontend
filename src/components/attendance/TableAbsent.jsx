@@ -87,7 +87,6 @@ const TableAbsent = () => {
                       <th>Name</th>
                       <th>Department</th>
                       <th>Position</th>
-                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -97,22 +96,6 @@ const TableAbsent = () => {
                         <td>{user.name}</td>
                         <td>{user.departement}</td>
                         <td>{user.position}</td>
-                        <td>
-                          <a
-                            href={`/edit-user/${user.id}`}
-                            className="btn btn-sm btn-warning"
-                          >
-                            <i className="bi bi-pencil-fill"></i>
-                          </a>
-                          &nbsp;
-                          <button
-                            onClick={() => handleDeleteClick(user.id)}
-                            className="btn btn-sm btn-danger"
-                            aria-label="Delete user"
-                          >
-                            <i className="bi bi-trash3-fill"></i>
-                          </button>
-                        </td>
                       </tr>
                     ))}
                   </tbody>

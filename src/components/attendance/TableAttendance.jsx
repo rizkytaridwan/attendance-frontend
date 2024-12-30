@@ -8,7 +8,6 @@ const TableAttendance = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [attendanceToDelete, setAttendanceToDelete] = useState(null);
 
-  // Fetch attendance data
   const fetchAttendance = async () => {
     try {
       const response = await axios.get("http://localhost:8000/attendance", {
@@ -22,26 +21,24 @@ const TableAttendance = () => {
   };
 
   useEffect(() => {
-      fetchAttendance();
-      if (!loading && window.$.fn.dataTable.isDataTable("#table1")) {
-        window.$("#table1").DataTable().destroy();
-      }
-      if (!loading) {
-        window.$("#table1").DataTable({
-          responsive: true,
-        });
-      }
-    }, [loading]);
+    fetchAttendance();
+    if (!loading && window.$.fn.dataTable.isDataTable("#table1")) {
+      window.$("#table1").DataTable().destroy();
+    }
+    if (!loading) {
+      window.$("#table1").DataTable({
+        responsive: true,
+      });
+    }
+  }, [loading]);
 
-
-  // Delete attendance
   const deleteAttendance = async (id) => {
     try {
       await axios.delete(`http://localhost:8000/attendance/${id}`, {
         withCredentials: true,
       });
       setModalVisible(false);
-      fetchAttendance(); // Re-fetch attendance after deletion
+      fetchAttendance();
     } catch (error) {
       console.error("Error deleting attendance:", error);
     }
@@ -52,9 +49,11 @@ const TableAttendance = () => {
     setModalVisible(true);
   };
 
-  // Convert to local time (Asia/Jakarta)
   const formatTime = (time) => {
-    return moment(time).tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss");
+    if (!time) return "N/A";
+    const momentTime = moment(time);
+    if (!momentTime.isValid()) return "N/A";
+    return momentTime.tz("Asia/Jakarta").format("YYYY-MM-DD HH:mm:ss");
   };
 
   return (
@@ -102,16 +101,11 @@ const TableAttendance = () => {
                         <td>{attendance.user.departement}</td>
                         <td>{attendance.user.position}</td>
                         <td>{formatTime(attendance.check_in_time)}</td>
-                        <td>{formatTime(attendance.check_out_time)}</td>
+                        <td>
+                          {formatTime(attendance.check_out_time) || "N/A"}
+                        </td>
                         <td>{attendance.status}</td>
                         <td>
-                          <a
-                            href={`/edit-attendance/${attendance.uuid}`}
-                            className="btn btn-sm btn-warning"
-                          >
-                            <i className="bi bi-pencil-fill"></i>
-                          </a>
-                          &nbsp;
                           <button
                             onClick={() => handleDeleteClick(attendance.uuid)}
                             className="btn btn-sm btn-danger"

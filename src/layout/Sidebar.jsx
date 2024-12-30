@@ -266,7 +266,7 @@ function Sidebar({
 
             <li
               className={`sidebar-item has-sub ${
-                isParentActive(["/leave-request", "/leave-history"]) ? "active" : ""
+                isParentActive(["/leavelist", "/leave-history"]) ? "active" : ""
               }`}
             >
               <a
@@ -286,9 +286,9 @@ function Sidebar({
                 }`}
               >
                 <li
-                  className={`submenu-item ${isActive("/leave-request") ? "active" : ""}`}
+                  className={`submenu-item ${isActive("/leavelist") ? "active" : ""}`}
                 >
-                  <a href="/leave-request" className="submenu-link">
+                  <a href="/leavelist" className="submenu-link">
                     Request Leave
                   </a>
                 </li>

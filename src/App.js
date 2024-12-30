@@ -8,6 +8,7 @@ import NotFoundPage from './404';
 import OvertimeListPage from './layout/overtimePage/OvertimeListPage';
 import AttendanceListPage from './layout/attendancePage/AttendanceListPage';
 import AbsentListPage from './layout/attendancePage/AbsentListPage';
+import LeaveListPage from './layout/leavePage/LeaveListPage';
 
 function App() {
   return (
@@ -27,6 +28,9 @@ function App() {
         //attendance
         <Route path="/attendancelist" element={<AttendanceListPage />} />
         <Route path="/absentlist" element={<AbsentListPage />} />
+
+        //leave
+        <Route path="/leavelist" element={<LeaveListPage />} />
       </Routes>
     </BrowserRouter>
   );
