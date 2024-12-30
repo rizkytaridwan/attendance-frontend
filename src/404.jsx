@@ -1,7 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NotFoundPage = () => {
+  const navigate = useNavigate(); // Inisialisasi hook navigate
+
+  const handleGoBack = () => {
+    navigate(-1); // Navigasi kembali ke halaman sebelumnya
+  };
+
   return (
     <div id="error">
       <div className="error-page container">
@@ -17,9 +23,12 @@ const NotFoundPage = () => {
             <p className="fs-5 text-gray-600">
               The page you are looking for is not found.
             </p>
-            <Link to="/" className="btn btn-lg btn-outline-primary mt-3">
+            <button
+              onClick={handleGoBack} // Menambahkan fungsi untuk tombol kembali
+              className="btn btn-lg btn-outline-primary mt-3"
+            >
               Go Back
-            </Link>
+            </button>
           </div>
         </div>
       </div>

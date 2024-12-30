@@ -6,6 +6,8 @@ import UserEditPage from './layout/userPage/UserEditPage';
 import ErrorPage from './403';
 import NotFoundPage from './404';
 import OvertimeListPage from './layout/overtimePage/OvertimeListPage';
+import AttendanceListPage from './layout/attendancePage/AttendanceListPage';
+import AbsentListPage from './layout/attendancePage/AbsentListPage';
 
 function App() {
   return (
@@ -21,6 +23,10 @@ function App() {
 
         //overtime
         <Route path="/overtimelist" element={<OvertimeListPage />} />
+
+        //attendance
+        <Route path="/attendancelist" element={<AttendanceListPage />} />
+        <Route path="/absentlist" element={<AbsentListPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,6 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const ErrorPage = () => {
+  const navigate = useNavigate();
+  
+  const handleGoBack = () => {
+    navigate(-1); 
+  };
+
   return (
     <div id="error">
       <div className="error-page container">
@@ -16,9 +23,12 @@ const ErrorPage = () => {
             <p className="fs-5 text-gray-600">
               You are unauthorized to see this page.
             </p>
-            <a href="/" className="btn btn-lg btn-outline-primary mt-3">
+            <button
+              onClick={handleGoBack} // Menambahkan fungsi untuk tombol kembali
+              className="btn btn-lg btn-outline-primary mt-3"
+            >
               Go Back
-            </a>
+            </button>
           </div>
         </div>
       </div>

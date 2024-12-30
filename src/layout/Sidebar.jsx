@@ -20,6 +20,9 @@ function Sidebar({
   const [isPayrollMenuOpen, setIsPayrollMenuOpen] = useState(
     localStorage.getItem("PayrollMenuState") === "open"
   );
+  const [isLeaveMenuOpen, setIsLeaveMenuOpen] = useState(
+    localStorage.getItem("LeaveMenuState") === "open"
+  );
 
   useEffect(() => {
     document.documentElement.setAttribute("data-bs-theme", theme);
@@ -56,6 +59,12 @@ function Sidebar({
       "PayrollMenuState",
       newPayrollMenuState ? "open" : "closed"
     );
+  };
+
+  const toggleLeaveMenu = () => {
+    const newLeaveMenuState = !isLeaveMenuOpen;
+    setIsLeaveMenuOpen(newLeaveMenuState);
+    localStorage.setItem("LeaveMenuState", newLeaveMenuState ? "open" : "closed");
   };
 
   return (
@@ -215,7 +224,7 @@ function Sidebar({
 
             <li
               className={`sidebar-item has-sub ${
-                isParentActive(["/attendance", "/pending"]) ? "active" : ""
+                isParentActive(["/attendancelist", "/absentlist"]) ? "active" : ""
               }`}
             >
               <a
@@ -236,20 +245,58 @@ function Sidebar({
               >
                 <li
                   className={`submenu-item ${
-                    isActive("/attendance") ? "active" : ""
+                    isActive("/attendancelist") ? "active" : ""
                   }`}
                 >
-                  <a href="/attendance" className="submenu-link">
+                  <a href="/attendancelist" className="submenu-link">
                     Attendance Data
                   </a>
                 </li>
                 <li
                   className={`submenu-item ${
-                    isActive("/pending") ? "active" : ""
+                    isActive("/absentlist") ? "active" : ""
                   }`}
                 >
-                  <a href="/pending" className="submenu-link">
-                    List Pending
+                  <a href="/absentlist" className="submenu-link">
+                    Absent Data
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li
+              className={`sidebar-item has-sub ${
+                isParentActive(["/leave-request", "/leave-history"]) ? "active" : ""
+              }`}
+            >
+              <a
+                href="#"
+                className="sidebar-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  toggleLeaveMenu();
+                }}
+              >
+                <i className="bi bi-people-fill"></i>
+                <span>Leave Request</span>
+              </a>
+              <ul
+                className={`submenu ${
+                  isLeaveMenuOpen ? "submenu-open" : "submenu-closed"
+                }`}
+              >
+                <li
+                  className={`submenu-item ${isActive("/leave-request") ? "active" : ""}`}
+                >
+                  <a href="/leave-request" className="submenu-link">
+                    Request Leave
+                  </a>
+                </li>
+                <li
+                  className={`submenu-item ${isActive("/leave-history") ? "active" : ""}`}
+                >
+                  <a href="/leave-history" className="submenu-link">
+                    Leave History
                   </a>
                 </li>
               </ul>
