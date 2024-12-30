@@ -21,8 +21,6 @@ function App() {
 
         //overtime
         <Route path="/overtimelist" element={<OvertimeListPage />} />
-        {/* <Route path="/add-user" element={<UserCreate />} />
-        <Route path="/edit-user/:id" element={<UserEditPage />} /> */}
       </Routes>
     </BrowserRouter>
   );
