@@ -448,6 +448,20 @@ const TableAttendance = () => {
                         {formatTime(attendanceDetail.check_out_time) || "N/A"}
                       </td>
                     </tr>
+                    <tr>
+                      <th>Check-in Ip</th>
+                      <td>:</td>
+                      <td>
+                        {attendanceDetail.check_in_ip || "N/A"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Check-out Ip</th>
+                      <td>:</td>
+                      <td>
+                       {attendanceDetail.check_out_ip || "N/A"}
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>

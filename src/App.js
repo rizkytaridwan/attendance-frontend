@@ -9,7 +9,8 @@ import OvertimeListPage from './layout/overtimePage/OvertimeListPage';
 import AttendanceListPage from './layout/attendancePage/AttendanceListPage';
 import AbsentListPage from './layout/attendancePage/AbsentListPage';
 import LeaveListPage from './layout/leavePage/LeaveListPage';
-import AttendanceInMonth from './tes';
+import AttendancePage from './components/attendance/CreateAttendance';
+
 
 function App() {
   return (
@@ -29,11 +30,10 @@ function App() {
         //attendance
         <Route path="/attendancelist" element={<AttendanceListPage />} />
         <Route path="/absentlist" element={<AbsentListPage />} />
+        <Route path="/attendance" element={<AttendancePage />} />
 
         //leave
         <Route path="/leavelist" element={<LeaveListPage />} />
-
-        <Route path="/attendanceinmonth" element={<AttendanceInMonth />} />
       </Routes>
     </BrowserRouter>
   );
