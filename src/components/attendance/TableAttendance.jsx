@@ -44,10 +44,10 @@ const TableAttendance = () => {
     }
   };
 
-  const fetchAttendanceInMonth = async () => {
+  const fetchAttendanceByUser = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/attendance-in-month",
+        "http://localhost:8000/attendance-by-user",
         attendanceInput,
         {
           withCredentials: true,
@@ -174,7 +174,7 @@ const TableAttendance = () => {
               className="btn btn-primary"
               onClick={() => setInputModalVisible(true)}
             >
-              Get Attendance In Month
+              Get Attendance By User
             </button>
           </div>
           <div className="card-body">
@@ -533,7 +533,7 @@ const TableAttendance = () => {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={fetchAttendanceInMonth}
+                  onClick={fetchAttendanceByUser}
                 >
                   Get Data
                 </button>
