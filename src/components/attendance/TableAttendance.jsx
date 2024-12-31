@@ -253,7 +253,51 @@ const TableAttendance = () => {
           </div>
         </div>
       </section>
-
+      {/* Modal for confirming deletion */}
+      {modalVisible && (
+        <div
+          className="modal fade show"
+          tabIndex="-1"
+          style={{ display: "block" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header bg-danger">
+                <h5 className="modal-title text-white">Delete Confirmation</h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => setModalVisible(false)}
+                >
+                  <i data-feather="x"></i>
+                </button>
+              </div>
+              <div className="modal-body">
+                Are you sure you want to delete this attendance record?
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-light-secondary"
+                  data-bs-dismiss="modal"
+                  onClick={() => setModalVisible(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger ms-1"
+                  onClick={() => deleteAttendance(attendanceToDelete)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Monthly Attendance Data */}
       {monthlyAttendances.length > 0 && (
         <section className="section">
@@ -297,6 +341,101 @@ const TableAttendance = () => {
             </div>
           </div>
         </section>
+      )}
+
+      {detailModalVisible && attendanceDetail && (
+        <div
+          className="modal fade show"
+          tabIndex="-1"
+          style={{ display: "block" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Attendance Details</h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => setDetailModalVisible(false)}
+                >
+                  <i data-feather="x"></i>
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="row">
+                  <div className="col-md-6 text-center">
+                    <h6>Check-in Image</h6>
+                    <img
+                      src={
+                        attendanceDetail.check_in_image
+                          ? `http://localhost:8000/${attendanceDetail.check_in_image}`
+                          : "http://localhost:8000/uploads/basic1.jpg"
+                      }
+                      alt="Check-in"
+                      className="img-fluid rounded"
+                    />
+                  </div>
+                  <div className="col-md-6 text-center">
+                    <h6>Check-out Image</h6>
+                    <img
+                      src={
+                        attendanceDetail.check_out_image
+                          ? `http://localhost:8000/${attendanceDetail.check_out_image}`
+                          : "http://localhost:8000/uploads/basic1.jpg"
+                      }
+                      alt="Check-out"
+                      className="img-fluid rounded"
+                    />
+                  </div>
+                </div>
+                <hr />
+                {/* Tabel untuk menampilkan detail */}
+                <table className="table">
+                  <tbody>
+                    <tr>
+                      <th>Name</th>
+                      <td>:</td>
+                      <td>{attendanceDetail.user.name}</td>
+                    </tr>
+                    <tr>
+                      <th>Department</th>
+                      <td>:</td>
+                      <td>{attendanceDetail.user.departement}</td>
+                    </tr>
+                    <tr>
+                      <th>Position</th>
+                      <td>:</td>
+                      <td>{attendanceDetail.user.position}</td>
+                    </tr>
+                    <tr>
+                      <th>Check-in Time</th>
+                      <td>:</td>
+                      <td>{formatTime(attendanceDetail.check_in_time)}</td>
+                    </tr>
+                    <tr>
+                      <th>Check-out Time</th>
+                      <td>:</td>
+                      <td>
+                        {formatTime(attendanceDetail.check_out_time) || "N/A"}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setDetailModalVisible(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {inputModalVisible && (
