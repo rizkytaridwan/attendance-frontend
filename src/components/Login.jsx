@@ -13,21 +13,17 @@ const Login = () => {
   );
 
   useEffect(() => {
-    // Check authentication status when component mounts
     dispatch(getMe())
       .unwrap()
       .then(() => {
-        // If getMe succeeds, user is authenticated, redirect to /users
         navigate("/users");
       })
       .catch(() => {
-        // If getMe fails, user is not authenticated, they can stay on login page
         dispatch(reset());
       });
   }, [dispatch, navigate]);
 
   useEffect(() => {
-    // Handle successful login
     if (user || isSuccess) {
       navigate("/users");
     }

@@ -36,8 +36,16 @@ export const getMe = createAsyncThunk("user/getMe", async(_, thunkAPI) => {
     }
 });
 
-export const LogOut = createAsyncThunk("user/LogOut", async() => {
-    await axios.delete('http://localhost:8000/logout');
+export const LogOut = createAsyncThunk("user/LogOut", async(_, thunkAPI) => {
+    try {
+        const response = await axios.delete('http://localhost:8000/logout');
+        return response.data;
+    } catch (error) {
+        if(error.response){
+            const message = error.response.data.msg;
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
 });
 
 export const authSlice = createSlice({
@@ -73,7 +81,15 @@ export const authSlice = createSlice({
             state.isLoading = false;
             state.isError = true;
             state.message = action.payload;
-        })
+        });
+
+        builder.addCase(LogOut.fulfilled, (state) => {
+            state.user = null;
+            state.isSuccess = false;
+            state.isLoading = false;
+            state.isError = false;
+            state.message = "";
+        });
     }
 });
 

@@ -15,11 +15,16 @@ const Header = () => {
     }
   }, [dispatch, user]);
 
-  const logout = () => {
-    dispatch(LogOut());
-    dispatch(reset());
-    navigate("/");
-  };
+  const logout = async () => {
+    try {
+        await dispatch(LogOut()).unwrap();
+        localStorage.clear(); // Tambahkan ini
+        dispatch(reset());
+        navigate("/");
+    } catch (error) {
+        console.error("Logout error:", error);
+    }
+};
 
   return (
     <div className="dropdown ms-auto">
