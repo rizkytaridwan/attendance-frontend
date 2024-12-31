@@ -1,27 +1,43 @@
-import React, { useState ,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {LoginUser,reset} from "../features/authSlice"
+import { LoginUser, reset, getMe } from "../features/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {user, isError, isSuccess, isLoading, message} = useSelector((state) => state.auth)
+  const { user, isError, isSuccess, isLoading, message } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
+    // Check authentication status when component mounts
+    dispatch(getMe())
+      .unwrap()
+      .then(() => {
+        // If getMe succeeds, user is authenticated, redirect to /users
+        navigate("/users");
+      })
+      .catch(() => {
+        // If getMe fails, user is not authenticated, they can stay on login page
+        dispatch(reset());
+      });
+  }, [dispatch, navigate]);
+
+  useEffect(() => {
+    // Handle successful login
     if (user || isSuccess) {
       navigate("/users");
     }
     dispatch(reset());
-  }, [user,  isSuccess, dispatch, navigate]);
+  }, [user, isSuccess, dispatch, navigate]);
 
   const Auth = (e) => {
     e.preventDefault();
     dispatch(LoginUser({ email, password }));
   };
-
 
   return (
     <div id="auth">
@@ -33,8 +49,8 @@ const Login = () => {
             <p className="auth-subtitle mb-5">
               Log in with your data that you entered during registration.
             </p>
-            {isError && <div className="alert alert-danger">{message}</div>} {/* Perbaiki penggunaan error */}
-            <form onSubmit={Auth}> {/* Perbaiki penggunaan handleLogin */}
+            {isError && <div className="alert alert-danger">{message}</div>}
+            <form onSubmit={Auth}>
               <div className="form-group position-relative has-icon-left mb-4">
                 <input
                   type="text"

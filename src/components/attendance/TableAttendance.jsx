@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment-timezone";
-import Choices from "choices.js"; // Import choices.js
+import Choices from "choices.js";
 
 const TableAttendance = () => {
   const [attendances, setAttendances] = useState([]);
@@ -43,20 +43,33 @@ const TableAttendance = () => {
       console.error("Error fetching attendance data:", error);
     }
   };
-
   const fetchAttendanceByUser = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/attendance-by-user",
-        attendanceInput,
-        {
-          withCredentials: true,
-        }
-      );
-      setMonthlyAttendances(response.data.data);
+      if (!attendanceInput.userId) {
+        const response = await axios.post(
+          "http://localhost:8000/attendance-in-month",
+          {
+            month: attendanceInput.month,
+            year: attendanceInput.year,
+          },
+          {
+            withCredentials: true,
+          }
+        );
+        setMonthlyAttendances(response.data.data);
+      } else {
+        const response = await axios.post(
+          "http://localhost:8000/attendance-by-user",
+          attendanceInput,
+          {
+            withCredentials: true,
+          }
+        );
+        setMonthlyAttendances(response.data.data);
+      }
       setInputModalVisible(false);
     } catch (error) {
-      console.error("Error fetching attendance in month:", error);
+      console.error("Error fetching attendance in month or by user:", error);
     }
   };
 
@@ -145,7 +158,6 @@ const TableAttendance = () => {
 
   useEffect(() => {
     if (inputModalVisible) {
-      // Initialize choices.js on the select element
       const userSelectElement = document.getElementById("user-select");
       new Choices(userSelectElement, {
         removeItemButton: true,
@@ -160,10 +172,25 @@ const TableAttendance = () => {
       <div className="page-title">
         <div className="row">
           <div className="col-12 col-md-6 order-md-1 order-last">
-            <h3>Attendance Records</h3>
+            <h3>Attendance Page</h3>
             <p className="text-subtitle text-muted">
               View and manage attendance data
             </p>
+          </div>
+          <div className="col-12 col-md-6 order-md-2 order-first">
+            <nav
+              aria-label="breadcrumb"
+              className="breadcrumb-header float-start float-lg-end"
+            >
+              <ol className="breadcrumb">
+                <li className="breadcrumb-item">
+                  <a href="index.html">Dashboard</a>
+                </li>
+                <li className="breadcrumb-item active" aria-current="page">
+                  Attendance Page
+                </li>
+              </ol>
+            </nav>
           </div>
         </div>
       </div>
@@ -174,7 +201,7 @@ const TableAttendance = () => {
               className="btn btn-primary"
               onClick={() => setInputModalVisible(true)}
             >
-              Get Attendance By User
+              Get Attendance In Month
             </button>
           </div>
           <div className="card-body">
@@ -309,7 +336,7 @@ const TableAttendance = () => {
                   ? users.find(
                       (user) => user.id === parseInt(attendanceInput.userId)
                     )?.name || "Unknown User"
-                  : "Select User"}{" "}
+                  : "All Users"}{" "}
                 {attendanceInput.month}/{attendanceInput.year}
               </h4>
             </div>
@@ -472,7 +499,7 @@ const TableAttendance = () => {
                       })
                     }
                   >
-                    <option value="">Select User</option>
+                    <option value="">Get All Data</option>
                     {users.map((user) => (
                       <option key={user.id} value={user.id}>
                         {user.name}
