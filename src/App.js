@@ -10,6 +10,7 @@ import AttendanceListPage from './layout/attendancePage/AttendanceListPage';
 import AbsentListPage from './layout/attendancePage/AbsentListPage';
 import LeaveListPage from './layout/leavePage/LeaveListPage';
 import AttendancePage from './components/attendance/CreateAttendance';
+import PayrollListPage from './layout/payrollPage/PayrollListPage';
 
 
 function App() {
@@ -34,6 +35,9 @@ function App() {
 
         //leave
         <Route path="/leavelist" element={<LeaveListPage />} />
+
+        //payroll
+        <Route path="/payroll" element={<PayrollListPage />} />
       </Routes>
     </BrowserRouter>
   );

@@ -304,7 +304,7 @@ function Sidebar({
 
             <li
               className={`sidebar-item has-sub ${
-                isParentActive(["/payrolldata", "/getpayroll"]) ? "active" : ""
+                isParentActive(["/payroll", "/getpayroll"]) ? "active" : ""
               }`}
             >
               <a
@@ -325,10 +325,10 @@ function Sidebar({
               >
                 <li
                   className={`submenu-item ${
-                    isActive("/payrolldata") ? "active" : ""
+                    isActive("/payroll") ? "active" : ""
                   }`}
                 >
-                  <a href="/payrolldata" className="submenu-link">
+                  <a href="/payroll" className="submenu-link">
                     Payroll Data
                   </a>
                 </li>
